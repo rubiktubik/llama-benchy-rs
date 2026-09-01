@@ -28,6 +28,7 @@ impl std::fmt::Display for LatencyMode {
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
 pub enum OutputFormat {
+    Pretty,
     Md,
     Json,
     Csv,
@@ -141,8 +142,12 @@ pub struct Args {
     pub save_result: Option<PathBuf>,
 
     /// Report format.
-    #[arg(long = "format", value_enum, default_value_t = OutputFormat::Md)]
+    #[arg(long = "format", value_enum, default_value_t = OutputFormat::Pretty)]
     pub output_format: OutputFormat,
+
+    /// Show variance, peak throughput, TTFR, and per-request values.
+    #[arg(long)]
+    pub detailed: bool,
 
     /// Total request timeout in seconds.
     #[arg(long, default_value_t = 3600)]
@@ -176,6 +181,7 @@ pub struct BenchmarkConfig {
     pub no_results_on_fail: bool,
     pub save_result: Option<PathBuf>,
     pub output_format: OutputFormat,
+    pub detailed: bool,
     pub timeout: Duration,
 }
 
@@ -241,6 +247,7 @@ impl BenchmarkConfig {
             no_results_on_fail: args.no_results_on_fail,
             save_result: args.save_result,
             output_format: args.output_format,
+            detailed: args.detailed,
             timeout: Duration::from_secs(args.timeout),
         })
     }

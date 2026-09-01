@@ -116,6 +116,7 @@ async fn complete_suite_writes_json_report() {
         no_results_on_fail: false,
         save_result: Some(report_path.clone()),
         output_format: OutputFormat::Json,
+        detailed: false,
         timeout: Duration::from_secs(5),
     };
 

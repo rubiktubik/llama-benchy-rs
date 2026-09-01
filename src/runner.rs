@@ -163,10 +163,15 @@ pub async fn run(config: BenchmarkConfig) -> Result<()> {
         prefix_caching_enabled: config.enable_prefix_caching,
         max_concurrency: config.concurrency_levels.iter().copied().max().unwrap_or(1),
         failed_requests,
+        measured_runs: config.num_runs,
         benchmarks,
     };
     report
-        .write(config.save_result.as_deref(), config.output_format)
+        .write(
+            config.save_result.as_deref(),
+            config.output_format,
+            config.detailed,
+        )
         .await?;
     if failed_requests > 0 {
         return Err(Error::Benchmark(format!(

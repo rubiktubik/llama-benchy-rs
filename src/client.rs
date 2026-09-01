@@ -207,13 +207,17 @@ impl LlmClient {
                 url: url.clone(),
                 source,
             })?;
+            // All SSE events in one received byte chunk have the same observable
+            // arrival time. Timing each parsed line separately would invent tiny
+            // gaps and produce absurd generation-throughput values.
+            let chunk_time = self.timestamp();
             buffer.extend_from_slice(&chunk);
             while let Some(newline) = buffer.iter().position(|byte| *byte == b'\n') {
                 let line = String::from_utf8_lossy(&buffer[..newline])
                     .trim_end_matches('\r')
                     .to_owned();
                 buffer.drain(..=newline);
-                self.parse_sse_line(&line, self.timestamp(), &url, &mut parsed)?;
+                self.parse_sse_line(&line, chunk_time, &url, &mut parsed)?;
             }
         }
         if !buffer.is_empty() {

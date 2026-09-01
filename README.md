@@ -45,7 +45,10 @@ Useful options include:
 - `--extra-body temperature=0,top_p=1` to add or override JSON request fields.
 - `--prompt-file corpus.txt` to avoid downloading the default Project Gutenberg
   corpus.
-- `--format md|json|csv` and `--save-result PATH` for machine-readable reports.
+- `--format pretty|md|json|csv` and `--save-result PATH` for terminal or
+  machine-readable reports. `pretty` is the default.
+- `--detailed` for variance, peak throughput, TTFR, and per-request throughput in
+  the Markdown report.
 
 Lists accept spaces or commas, so `--pp 512,2048` and `--pp 512 2048` are both
 valid.
@@ -75,6 +78,13 @@ For completion counts, rust-benchy uses this priority:
 This handles multi-token prediction chunks without requiring local tokenization.
 
 ## Metrics
+
+The default terminal report is optimized for scanning: a Unicode table with one
+row per benchmark shape and the three key results—mean input throughput, mean
+output throughput, and end-to-end TTFT. It uses color only on an interactive TTY;
+redirected output and saved files remain color-free. `--format md` provides the
+same compact structure as Markdown. Use `--format md --detailed` for the original
+full diagnostic table; JSON and CSV always retain the complete metric set.
 
 - Prompt `t/s`: server-reported input tokens divided by estimated prompt processing
   time (`TTFR - latency baseline`).
